@@ -1,3 +1,4 @@
+load("@build_bazel_rules_apple//apple:ios.bzl", "ios_build_test")
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 exports_files(
@@ -17,5 +18,20 @@ sh_test(
     name = "test_zlib",
     srcs = ["test_zlib.sh"],
     data = [":zlib_usage_example"],
+    visibility = ["//:__pkg__"],
+)
+
+cc_library(
+    name = "ios_lib",
+    srcs = ["zlib-example.cpp"],
+    tags = ["manual"],
+    deps = ["@zlib"],
+)
+
+ios_build_test(
+    name = "test_zlib_ios",
+    minimum_os_version = "12.0",
+    tags = ["manual"],
+    targets = ["ios_lib"],
     visibility = ["//:__pkg__"],
 )

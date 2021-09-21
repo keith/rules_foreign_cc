@@ -9,13 +9,33 @@ filegroup(
 
 cmake(
     name = "zlib",
-    generate_args = select({
-        "@platforms//os:windows": ["-GNinja"],
-        "//conditions:default": [],
+    cache_entries = select({
+        "//conditions:default": {
+            "CMAKE_CXX_COMPILER_FORCED": "on",
+            "CMAKE_C_COMPILER_FORCED": "on",
+            "SKIP_BUILD_EXAMPLES": "on",
+            "BUILD_SHARED_LIBS": "off",
+            "ZLIB_COMPAT": "on",
+            "ZLIB_ENABLE_TESTS": "off",
+            "WITH_OPTIM": "on",
+            "WITH_SSE4": "off",
+            "WITH_NEW_STRATEGIES": "off",
+            "UNALIGNED_OK": "off",
+            "CMAKE_BUILD_TYPE": "Bazel",
+        },
     }),
+    generate_args = ["-GNinja"],
+    generate_crosstool_file = select({
+        "//conditions:default": False,
+    }),
+    install = False,
     lib_source = ":all_srcs",
     out_static_libs = select({
-        "@platforms//os:windows": ["zlibstatic.lib"],
         "//conditions:default": ["libz.a"],
     }),
+    postfix_script = "",
+    targets = [
+        "",
+        "install",
+    ],
 )
